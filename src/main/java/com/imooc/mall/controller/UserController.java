@@ -40,5 +40,6 @@ public class UserController {
         }
         userService.register(userName,password);
         return ApiRestResponse.success();
+        //在用postman测试接口过程中，也发现了一个问题：异常写入与正常写入时，接口返回的信息格式有所不同且会暴露错误类型，这样将十分不安全；
     }
 }
