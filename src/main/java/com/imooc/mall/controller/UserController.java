@@ -12,9 +12,13 @@ public class UserController {
     @Autowired
     UserService userService;
 
+//    @GetMapping({"/test","test1"}) //多个URL指向同一个接口
     @GetMapping("/test")
     @ResponseBody //指定返回json格式
     public User personalPage(){
        return userService.getUser();
+    }
+    public void register(){
+
     }
 }
