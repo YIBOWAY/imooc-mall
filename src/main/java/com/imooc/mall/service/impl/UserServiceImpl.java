@@ -5,8 +5,11 @@ import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import com.imooc.mall.model.dao.UserMapper;
 import com.imooc.mall.model.pojo.User;
 import com.imooc.mall.service.UserService;
+import com.imooc.mall.util.MD5Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.security.NoSuchAlgorithmException;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -29,7 +32,12 @@ public class UserServiceImpl implements UserService {
         //通过重名检测后，可以写入数据库
         User user = new User();
         user.setUsername(userName);
-        user.setPassword(password);
+        try {
+            user.setPassword(MD5Utils.getMD5Str(password));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+//        user.setPassword(password);
         int count = userMapper.insertSelective(user);//此时只修改username和password两个字段，故选择insertSelective方法
         if (count == 0){//正常插入，应该返回修改的行数
             throw new ImoocMallException(ImoocMallExceptionEnum.INSERT_FAILED);
