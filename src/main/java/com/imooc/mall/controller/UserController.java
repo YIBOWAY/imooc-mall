@@ -1,6 +1,7 @@
 package com.imooc.mall.controller;
 
 import com.imooc.mall.common.ApiRestResponse;
+import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocMallException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import com.imooc.mall.model.pojo.User;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
 public class UserController {
@@ -27,7 +30,8 @@ public class UserController {
 
     @PostMapping("/register")
     @ResponseBody
-    public ApiRestResponse register(@RequestParam("userName") String userName, @RequestParam("password") String password) throws ImoocMallException {
+    public ApiRestResponse register(@RequestParam("userName") String userName,
+                                    @RequestParam("password") String password) throws ImoocMallException {
         if (StringUtils.isEmpty(userName)){//springframework提供的工具类
             return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_USER_NAME);
         }
@@ -41,5 +45,23 @@ public class UserController {
         userService.register(userName,password);
         return ApiRestResponse.success();
         //在用postman测试接口过程中，也发现了一个问题：异常写入与正常写入时，接口返回的信息格式有所不同且会暴露错误类型，这样将十分不安全；
+    }
+
+
+    @PostMapping("/login")
+    @ResponseBody
+    public ApiRestResponse login(@RequestParam("userName") String userName,
+                                 @RequestParam("password") String password, HttpSession session) throws ImoocMallException {
+        if (StringUtils.isEmpty(userName)){//springframework提供的工具类
+            return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_USER_NAME);
+        }
+        if (StringUtils.isEmpty(password)){//springframework提供的工具类
+            return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_PASSWORD);
+        }
+        User user = userService.login(userName,password);
+        //保存用户信息时，不保存密码
+        user.setPassword(null);
+        session.setAttribute(Constant.IMOOC_MALL_USER,user);//key,value形式，key值固定，设为常量
+        return ApiRestResponse.success(user);
     }
 }
