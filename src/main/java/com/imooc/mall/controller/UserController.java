@@ -61,7 +61,53 @@ public class UserController {
         User user = userService.login(userName,password);
         //保存用户信息时，不保存密码
         user.setPassword(null);
-        session.setAttribute(Constant.IMOOC_MALL_USER,user);//key,value形式，key值固定，设为常量
+        session.setAttribute(Constant.IMOOC_MALL_USER,user);//将用户信息存储到session中，以key,value形式保存，key值固定，设为常量
         return ApiRestResponse.success(user);
     }
+
+    @PostMapping("/user/update")
+    @ResponseBody
+    public ApiRestResponse updateUserInfo(HttpSession session,@RequestParam String signature) throws ImoocMallException {
+        User currentUser = (User) session.getAttribute(Constant.IMOOC_MALL_USER);
+        if (currentUser == null){//判断用户是否登录
+            return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_LOGIN);
+        }
+        User user = new User();
+        user.setId(currentUser.getId());//获取当前的用户ID，根据ID返回数据库查找
+        user.setPersonalizedSignature(signature);
+        userService.updateInformation(user);
+        return ApiRestResponse.success();
+    }
+
+    @PostMapping("/user/logout")
+    @ResponseBody
+    public ApiRestResponse logout(HttpSession session){
+        session.removeAttribute(Constant.IMOOC_MALL_USER);
+        return ApiRestResponse.success();
+    }
+
+    @PostMapping("/adminLogin")
+    @ResponseBody
+    public ApiRestResponse adminLogin(@RequestParam("userName") String userName,
+                                 @RequestParam("password") String password, HttpSession session) throws ImoocMallException {
+        if (StringUtils.isEmpty(userName)){//springframework提供的工具类
+            return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_USER_NAME);
+        }
+        if (StringUtils.isEmpty(password)){//springframework提供的工具类
+            return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_PASSWORD);
+        }
+        User user = userService.login(userName,password);
+        //校验是否是管理员
+        if (userService.checkAdminRole(user)) {
+            //是管理员，继续进行操作
+            //保存用户信息时，不保存密码
+            user.setPassword(null);
+            session.setAttribute(Constant.IMOOC_MALL_USER,user);//将用户信息存储到session中，以key,value形式保存，key值固定，设为常量
+            return ApiRestResponse.success(user);
+        }else {
+            return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_ADMIN);
+        }
+
+    }
+
 }

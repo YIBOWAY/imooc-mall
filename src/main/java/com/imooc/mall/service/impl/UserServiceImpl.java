@@ -52,11 +52,26 @@ public class UserServiceImpl implements UserService {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        User user = userMapper.selectLogin(userName,password);
+        User user = userMapper.selectLogin(userName,md5Password);
         if (user == null){
                 throw new ImoocMallException(ImoocMallExceptionEnum.WRONG_PASSWORD);
         }
         return user;
 
+    }
+    @Override
+    public void updateInformation(User user) throws ImoocMallException {
+        int updateCount = userMapper.updateByPrimaryKeySelective(user);//该方法为修改一个字段；
+        //使用新建user对象的原因：该方法在更新时，先判断对象传入的值，如果不为空，就把对象的值更新进去；如果直接使用session中的对象，那么其他字段都不会更新，包括update_time等，不符合逻辑，故使用新建对象；
+        if (updateCount > 1){
+            //此时判断条件为什么设置为大于1？因为我们只更改一条数据，故多于一条数据的都有问题；但是小于一条的情况只有0，当更新前后一样时，返回0；又因为用户处于已登录情况，很难出现其他情况
+            throw new ImoocMallException(ImoocMallExceptionEnum.UPDATE_FAILED);
+        }
+    }
+
+    @Override
+    public boolean checkAdminRole(User user){
+        //1是普通用户，2是管理员
+        return user.getRole().equals(2);
     }
 }

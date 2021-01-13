@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
@@ -35,6 +34,7 @@ public class WebLogAspect {
         log.info("URL: "+request.getRequestURI().toString());
         log.info("HTTP_METHOD :"+ request.getMethod());
         log.info("IP : "+ request.getRemoteAddr());
+        log.info("Port : "+ request.getRemotePort());
         log.info("CLASS_METHOD :"+ joinPoint.getSignature().getDeclaringTypeName()+"."+joinPoint.getSignature().getName());
         log.info("ARGS : "+ Arrays.toString(joinPoint.getArgs()));
 
