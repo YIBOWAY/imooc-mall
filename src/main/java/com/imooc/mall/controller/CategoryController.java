@@ -7,6 +7,7 @@ import com.imooc.mall.model.pojo.User;
 import com.imooc.mall.model.request.AddCategoryReq;
 import com.imooc.mall.service.CategoryService;
 import com.imooc.mall.service.UserService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,13 @@ public class CategoryController {
     UserService userService;
     @Autowired
     CategoryService categoryService;
+    @ApiOperation("后台添加目录")
+    /**
+     * 后台添加目录
+     * @param session
+     * @param addCategoryReq
+     * @return
+     */
     @PostMapping("/admin/category/add")
     @ResponseBody
     public ApiRestResponse addCategory(HttpSession session, @Valid @RequestBody AddCategoryReq addCategoryReq){//添加前需要对用户个人信息进行校验

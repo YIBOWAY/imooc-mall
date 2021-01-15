@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * 描述:  添加目录请求类
+ * 描述:  添加目录请求类，为了避免传入参数过多而造成的工程量过大
  */
 public class AddCategoryReq {//注解的使用，也突出了新建一个类的必要性，如果直接运用Category实体类，在复杂业务中可能拥有不同的逻辑；
     @Size(min = 2,max = 5,message = "name长度必须在2-5字符串之间")
