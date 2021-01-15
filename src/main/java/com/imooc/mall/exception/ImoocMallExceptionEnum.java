@@ -12,6 +12,7 @@ public enum  ImoocMallExceptionEnum {
     NEED_LOGIN(10007,"未登录，需要登录！"),
     UPDATE_FAILED(10008,"更新失败"),
     NEED_ADMIN(10009,"无管理员权限"),
+    NAME_NOT_NULL(10010,"名称不能为空"),
     //区分业务异常及系统异常，通过异常代码；
     SYSTEM_ERROR(20000,"系统异常");
     /**

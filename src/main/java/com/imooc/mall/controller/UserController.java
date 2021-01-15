@@ -28,6 +28,13 @@ public class UserController {
        return userService.getUser();
     }
 
+    /**
+     * 注册接口
+     * @param userName
+     * @param password
+     * @return
+     * @throws ImoocMallException
+     */
     @PostMapping("/register")
     @ResponseBody
     public ApiRestResponse register(@RequestParam("userName") String userName,
@@ -47,7 +54,14 @@ public class UserController {
         //在用postman测试接口过程中，也发现了一个问题：异常写入与正常写入时，接口返回的信息格式有所不同且会暴露错误类型，这样将十分不安全；
     }
 
-
+    /**
+     * 登录接口
+     * @param userName
+     * @param password
+     * @param session
+     * @return
+     * @throws ImoocMallException
+     */
     @PostMapping("/login")
     @ResponseBody
     public ApiRestResponse login(@RequestParam("userName") String userName,
@@ -65,6 +79,13 @@ public class UserController {
         return ApiRestResponse.success(user);
     }
 
+    /**
+     * 更新个性签名
+     * @param session
+     * @param signature
+     * @return
+     * @throws ImoocMallException
+     */
     @PostMapping("/user/update")
     @ResponseBody
     public ApiRestResponse updateUserInfo(HttpSession session,@RequestParam String signature) throws ImoocMallException {
@@ -79,6 +100,11 @@ public class UserController {
         return ApiRestResponse.success();
     }
 
+    /**
+     * 登出接口
+     * @param session
+     * @return
+     */
     @PostMapping("/user/logout")
     @ResponseBody
     public ApiRestResponse logout(HttpSession session){
@@ -86,6 +112,14 @@ public class UserController {
         return ApiRestResponse.success();
     }
 
+    /**
+     * 管理员登录
+     * @param userName
+     * @param password
+     * @param session
+     * @return
+     * @throws ImoocMallException
+     */
     @PostMapping("/adminLogin")
     @ResponseBody
     public ApiRestResponse adminLogin(@RequestParam("userName") String userName,
