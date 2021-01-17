@@ -74,4 +74,11 @@ public class CategoryController {
             return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_ADMIN);
         }
     }
+
+    @ApiOperation("后台删除目录")
+    @PostMapping("/admin/category/delete")
+    @ResponseBody
+    public ApiRestResponse deleteCategory(){
+        return null;
+    }
 }
