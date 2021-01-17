@@ -5,6 +5,7 @@ import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import com.imooc.mall.model.dao.CategoryMapper;
 import com.imooc.mall.model.pojo.Category;
 import com.imooc.mall.model.request.AddCategoryReq;
+import com.imooc.mall.model.request.UpdateCategoryReq;
 import com.imooc.mall.service.CategoryService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,22 @@ public class CategoryServiceImpl implements CategoryService {
         int count = categoryMapper.insertSelective(category);
         if (count == 0){
             throw new ImoocMallException(ImoocMallExceptionEnum.CREATE_FAILED);
+        }
+    }
+
+
+    @Override
+    public void update(Category updateCategory){
+        if (updateCategory.getName() != null){//如果传递来的参数包含name，需要进行校验
+            Category categoryOld = categoryMapper.selectByName(updateCategory.getName());
+            if (categoryOld != null && !categoryOld.getId().equals(updateCategory.getId())){//不仅需要校验是否查询到，还需要校验查询到的数据库中对象ID跟传入的要更新的ID是否一样；
+                //因为有可能是更新目录所属层数
+                throw new ImoocMallException(ImoocMallExceptionEnum.NAME_EXISTED);
+            }
+        }
+        int count = categoryMapper.updateByPrimaryKeySelective(updateCategory);
+        if (count == 0){
+            throw new ImoocMallException(ImoocMallExceptionEnum.UPDATE_FAILED);
         }
     }
 }
