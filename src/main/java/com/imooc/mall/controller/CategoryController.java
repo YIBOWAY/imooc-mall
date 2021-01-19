@@ -1,5 +1,6 @@
 package com.imooc.mall.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.imooc.mall.common.ApiRestResponse;
 import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
@@ -82,5 +83,13 @@ public class CategoryController {
     public ApiRestResponse deleteCategory(@RequestParam Integer id){
         categoryService.delete(id);
         return ApiRestResponse.success();
+    }
+
+    @ApiOperation("后台目录列表")
+    @PostMapping("/admin/category/list")
+    @ResponseBody
+    public ApiRestResponse listCategoryForAdmin(@RequestParam Integer pageNum,@RequestParam Integer pageSize){//第一个参数代表第几页，第二个参数代表页面数量
+        PageInfo pageInfo = categoryService.listForAdmin(pageNum,pageSize);
+        return ApiRestResponse.success(pageInfo);
     }
 }

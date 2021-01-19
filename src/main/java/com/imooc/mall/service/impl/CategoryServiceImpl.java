@@ -1,14 +1,19 @@
 package com.imooc.mall.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.imooc.mall.exception.ImoocMallException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import com.imooc.mall.model.dao.CategoryMapper;
 import com.imooc.mall.model.pojo.Category;
 import com.imooc.mall.model.request.AddCategoryReq;
+import com.imooc.mall.model.vo.CategoryVO;
 import com.imooc.mall.service.CategoryService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 描述:  目录分类service接口实现类
@@ -60,5 +65,15 @@ public class CategoryServiceImpl implements CategoryService {
         if (count == 0){
             throw new ImoocMallException(ImoocMallExceptionEnum.DELETE_FAILED);
         }
+    }
+
+    @Override
+    public PageInfo listForAdmin(Integer pageNum,Integer pageSize){
+        PageHelper.startPage(pageNum,pageSize,"type,order_num");//第一优先级按照type排序，第二优先级按照order_num
+        List<Category> categoryList = categoryMapper.selectList();
+        PageInfo pageInfo = new PageInfo(categoryList);//list包含在pageinfo当中
+        return pageInfo;//不可以直接返回list。listForAdmin()方法中分页查询了数据。list中没有当前页，每页中多少条数据，总页数等信息，所以需要返回pageinfo。
+        //pageInfo中包含了总共有多少条数据，当前是否是最后一页等多条在与前端交互时十分有用的数据
+
     }
 }
