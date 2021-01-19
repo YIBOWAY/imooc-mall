@@ -5,7 +5,6 @@ import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import com.imooc.mall.model.dao.CategoryMapper;
 import com.imooc.mall.model.pojo.Category;
 import com.imooc.mall.model.request.AddCategoryReq;
-import com.imooc.mall.model.request.UpdateCategoryReq;
 import com.imooc.mall.service.CategoryService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +46,19 @@ public class CategoryServiceImpl implements CategoryService {
         int count = categoryMapper.updateByPrimaryKeySelective(updateCategory);
         if (count == 0){
             throw new ImoocMallException(ImoocMallExceptionEnum.UPDATE_FAILED);
+        }
+    }
+
+    @Override
+    public void delete(Integer id){
+        Category categoryOld = categoryMapper.selectByPrimaryKey(id);
+        //查不到记录，无法删除，删除失败
+        if (categoryOld == null){
+            throw new ImoocMallException(ImoocMallExceptionEnum.DELETE_FAILED);
+        }
+        int count = categoryMapper.deleteByPrimaryKey(id);
+        if (count == 0){
+            throw new ImoocMallException(ImoocMallExceptionEnum.DELETE_FAILED);
         }
     }
 }
