@@ -12,7 +12,9 @@ import com.imooc.mall.service.CategoryService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,7 +70,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public PageInfo listForAdmin(Integer pageNum,Integer pageSize){
+    public PageInfo listForAdmin(Integer pageNum, Integer pageSize){
         PageHelper.startPage(pageNum,pageSize,"type,order_num");//第一优先级按照type排序，第二优先级按照order_num
         List<Category> categoryList = categoryMapper.selectList();
         PageInfo pageInfo = new PageInfo(categoryList);//list包含在pageinfo当中
@@ -76,4 +78,30 @@ public class CategoryServiceImpl implements CategoryService {
         //pageInfo中包含了总共有多少条数据，当前是否是最后一页等多条在与前端交互时十分有用的数据
 
     }
+
+    @Override
+    public List<CategoryVO> listCategoryForCustomer(){
+        ArrayList<CategoryVO> categoryVOList = new ArrayList<>();
+        recursiveFindCategories(categoryVOList,0);//从0——一级目录开始检索,递归得到所有目录分级
+        return categoryVOList;
+    }
+
+    private void recursiveFindCategories(List<CategoryVO> categoryVOList,Integer parentId){//单独新增一个方法，实现职责的分离
+        //parentId意义：获取以……为父目录的目录
+        //递归获取所有子类别，并组合成一个目录树
+        List<Category> categoryList = categoryMapper.selectCategoriesByParentId(parentId);
+        if (!CollectionUtils.isEmpty(categoryList)){
+            for (int i = 0;i < categoryList.size();i++){
+                Category category = categoryList.get(i);
+                CategoryVO categoryVO = new CategoryVO();
+                BeanUtils.copyProperties(category,categoryVO);//将获取到的类放入新的类当中
+                categoryVOList.add(categoryVO);//此时还有一个字段未填充
+                recursiveFindCategories(categoryVO.getChildCategory(),categoryVO.getId());//递归调用，获取子类别
+
+            }
+        }
+
+    }
+
+
 }

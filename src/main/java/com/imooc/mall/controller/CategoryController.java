@@ -8,6 +8,7 @@ import com.imooc.mall.model.pojo.Category;
 import com.imooc.mall.model.pojo.User;
 import com.imooc.mall.model.request.AddCategoryReq;
 import com.imooc.mall.model.request.UpdateCategoryReq;
+import com.imooc.mall.model.vo.CategoryVO;
 import com.imooc.mall.service.CategoryService;
 import com.imooc.mall.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 目录controller
@@ -91,5 +93,13 @@ public class CategoryController {
     public ApiRestResponse listCategoryForAdmin(@RequestParam Integer pageNum,@RequestParam Integer pageSize){//第一个参数代表第几页，第二个参数代表页面数量
         PageInfo pageInfo = categoryService.listForAdmin(pageNum,pageSize);
         return ApiRestResponse.success(pageInfo);
+    }
+
+    @ApiOperation("前台目录列表")
+    @PostMapping("category/list")
+    @ResponseBody
+    public ApiRestResponse listCategoryForCustomer(){//第一个参数代表第几页，第二个参数代表页面数量
+        List<CategoryVO> categoryVOS = categoryService.listCategoryForCustomer();
+        return ApiRestResponse.success(categoryVOS);
     }
 }
