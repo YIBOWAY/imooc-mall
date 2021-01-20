@@ -1,11 +1,12 @@
 package com.imooc.mall.model.vo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 //plain ordinary java object
-public class CategoryVO {
+public class CategoryVO implements Serializable {//实现Serializable接口才能完成序列化，存储到缓存中
     private Integer id;
 
     private String name;
