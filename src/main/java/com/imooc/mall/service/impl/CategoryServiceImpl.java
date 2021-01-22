@@ -81,7 +81,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Cacheable(value = "listCategoryForCustomer")
+    @Cacheable(value = "listCategoryForCustomer")//注意该注解是springframework提供的注解
     public List<CategoryVO> listCategoryForCustomer(){
         ArrayList<CategoryVO> categoryVOList = new ArrayList<>();
         recursiveFindCategories(categoryVOList,0);//从0——一级目录开始检索,递归得到所有目录分级
