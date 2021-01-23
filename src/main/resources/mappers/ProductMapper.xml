@@ -163,4 +163,9 @@
     </foreach>
 # 利用foreach语句，拼接SQL语句，遍历传入的数组
   </update>
+  <select id="selectListForAdmin" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from imooc_mall.imooc_mall_product
+    order by update_time desc
+  </select>
 </mapper>

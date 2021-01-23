@@ -98,7 +98,7 @@ public class CategoryController {
     @ApiOperation("前台目录列表")
     @PostMapping("category/list")
     @ResponseBody
-    public ApiRestResponse listCategoryForCustomer(){//第一个参数代表第几页，第二个参数代表页面数量
+    public ApiRestResponse listCategoryForCustomer(){
         List<CategoryVO> categoryVOS = categoryService.listCategoryForCustomer();
         return ApiRestResponse.success(categoryVOS);
     }

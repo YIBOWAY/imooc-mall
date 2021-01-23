@@ -1,7 +1,7 @@
 package com.imooc.mall.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.imooc.mall.common.ApiRestResponse;
-import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocMallException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import com.imooc.mall.model.pojo.Product;
@@ -16,11 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.UUID;
 
 /**
  * 描述:  后台商品管理controller
@@ -72,6 +69,13 @@ public class ProductAdminController {
         }
         productService.batchUpdateSellStatus(ids,sellStatus);
         return ApiRestResponse.success();
+    }
+
+    @ApiOperation("后台列表接口")
+    @PostMapping("/admin/product/list")
+    public ApiRestResponse list(@RequestParam Integer pageNum,@RequestParam Integer pageSize){
+        PageInfo pageInfo = productService.listForAdmin(pageNum, pageSize);
+        return ApiRestResponse.success(pageInfo);
     }
 
 }

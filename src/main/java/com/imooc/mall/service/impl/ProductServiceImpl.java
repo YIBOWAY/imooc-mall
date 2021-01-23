@@ -1,5 +1,7 @@
 package com.imooc.mall.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocMallException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
@@ -17,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -107,7 +110,27 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void batchUpdateSellStatus(Integer[] ids,Integer sellStatus){
+    public void batchUpdateSellStatus(Integer[] ids, Integer sellStatus){
         productMapper.batchUpdateSellStatus(ids,sellStatus);
+    }
+
+    @Override
+    public PageInfo listForAdmin(Integer pageNum, Integer pageSize){
+        PageHelper.startPage(pageNum,pageSize);
+        List<Product> products = productMapper.selectListForAdmin();
+        PageInfo pageInfo = new PageInfo(products);
+        return pageInfo;
+    }
+
+    @Override
+    public Product details(Integer id){
+        if (id == null){
+            throw new ImoocMallException(ImoocMallExceptionEnum.PARA_NOT_NULL);
+        }
+        Product product = productMapper.selectByPrimaryKey(id);
+        if (product == null){
+            throw new ImoocMallException(ImoocMallExceptionEnum.REQUEST_PARAM_ERROR);
+        }
+        return product;
     }
 }

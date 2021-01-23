@@ -1,8 +1,11 @@
 package com.imooc.mall.model.dao;
 
+import com.github.pagehelper.PageInfo;
 import com.imooc.mall.model.pojo.Product;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface ProductMapper {
@@ -21,4 +24,7 @@ public interface ProductMapper {
     Product selectByName(String name);
 
     int batchUpdateSellStatus(@Param("ids") Integer[] ids, @Param("sellStatus") Integer sellStatus);
+    //当传入参数有多个且多个参数类型时，用@Param声明参数，就不用在xml文件中声明类型等；
+
+    List<Product> selectListForAdmin();
 }
