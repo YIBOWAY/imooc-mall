@@ -64,4 +64,14 @@ public class ProductAdminController {
        return ApiRestResponse.success();
     }
 
+    @ApiOperation("后台批量上下架商品接口")
+    @PostMapping("/admin/product/batchUpdateSellStatus")
+    public ApiRestResponse batchUpdateSellStatus(@RequestParam Integer[] ids,@RequestParam Integer sellStatus){
+        if (ids == null || ids.length == 0 || sellStatus == null){
+            throw new ImoocMallException(ImoocMallExceptionEnum.PARA_NOT_NULL);
+        }
+        productService.batchUpdateSellStatus(ids,sellStatus);
+        return ApiRestResponse.success();
+    }
+
 }

@@ -154,4 +154,13 @@
     from imooc_mall.imooc_mall_product
     where name = #{name,jdbcType = VARCHAR}
   </select>
+  <update id="batchUpdateSellStatus">
+    update imooc_mall.imooc_mall_product
+    set status = #{sellStatus}
+    where id in
+    <foreach collection="ids" close=")" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+# 利用foreach语句，拼接SQL语句，遍历传入的数组
+  </update>
 </mapper>
