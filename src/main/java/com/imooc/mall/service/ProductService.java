@@ -1,12 +1,11 @@
 package com.imooc.mall.service;
 
-import com.github.pagehelper.PageInfo;
-import com.imooc.mall.model.pojo.Category;
-import com.imooc.mall.model.request.AddCategoryReq;
+import com.imooc.mall.model.pojo.Product;
 import com.imooc.mall.model.request.AddProductReq;
-import com.imooc.mall.model.vo.CategoryVO;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
 
 /**
  * 描述:  商品添加service接口
@@ -14,4 +13,12 @@ import java.util.List;
 public interface ProductService {
 
     void add(AddProductReq addProductReq);
+
+    String upload(HttpServletRequest httpServletRequest, MultipartFile file);
+
+    URI getHost(URI uri);
+
+    void update(Product updateProduct);
+
+    void delete(Integer id);
 }
