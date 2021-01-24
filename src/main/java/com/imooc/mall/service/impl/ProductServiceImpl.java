@@ -7,11 +7,16 @@ import com.imooc.mall.exception.ImoocMallException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import com.imooc.mall.model.dao.ProductMapper;
 import com.imooc.mall.model.pojo.Product;
+import com.imooc.mall.model.query.ProductListQuery;
 import com.imooc.mall.model.request.AddProductReq;
+import com.imooc.mall.model.request.ProductListReq;
+import com.imooc.mall.model.vo.CategoryVO;
+import com.imooc.mall.service.CategoryService;
 import com.imooc.mall.service.ProductService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,6 +36,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     ProductMapper productMapper;
+
+    @Autowired
+    CategoryService categoryService;
 
     @Override
     public void add(AddProductReq addProductReq){
@@ -132,5 +141,47 @@ public class ProductServiceImpl implements ProductService {
             throw new ImoocMallException(ImoocMallExceptionEnum.REQUEST_PARAM_ERROR);
         }
         return product;
+    }
+
+    @Override
+    public PageInfo list(ProductListReq productListReq){
+        //构建query对象
+        ProductListQuery productListQuery = new ProductListQuery();
+
+        //搜索处理
+        if (!StringUtils.isEmpty(productListReq.getKeyword())){
+            String keyword = new StringBuilder().append("%").append(productListReq.getKeyword()).append("%").toString();//进行字符串拼接
+            productListQuery.setKeyword(keyword);
+        }
+
+        //目录处理：如果查某个目录下的商品，不仅是需要查出该目录下的，还要把所有子目录的商品查出来，所以要拿到一个目录id的list
+        if (productListReq.getCategoryId() != null){
+            List<CategoryVO> categoryVOList = categoryService.listCategoryForCustomer(productListReq.getCategoryId());//获取到所有子目录ID
+            ArrayList<Integer> categoryIds = new ArrayList<>();//用于存储
+            categoryIds.add(productListReq.getCategoryId());//先添加第一个传入ID
+            getCategoryIds(categoryVOList,categoryIds);
+            productListQuery.setCategoryIds(categoryIds);
+        }
+
+        //排序处理
+        String orderBy = productListReq.getOrderBy();
+        if (Constant.ProductListOrderBy.PRICE_ASC_DESC.contains(orderBy)){
+            PageHelper.startPage(productListReq.getPageNum(),productListReq.getPageSize(),orderBy);
+        }else {
+            PageHelper.startPage(productListReq.getPageNum(),productListReq.getPageSize());//不进行排序
+        }
+        List<Product> productList = productMapper.selectList(productListQuery);
+        PageInfo pageInfo = new PageInfo(productList);
+        return pageInfo;
+    }
+
+    private void getCategoryIds(List<CategoryVO> categoryVOList,ArrayList<Integer> categoryIds){//该方法用于获取子目录下的商品ID
+        for (int i = 0; i < categoryVOList.size(); i++) {
+            CategoryVO categoryVO =  categoryVOList.get(i);
+            if (categoryVO != null){
+                categoryIds.add(categoryVO.getId());
+                getCategoryIds(categoryVO.getChildCategory(),categoryIds);
+            }
+        }
     }
 }
