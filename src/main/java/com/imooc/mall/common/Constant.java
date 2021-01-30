@@ -32,6 +32,11 @@ public class Constant {
         int NOT_SALE = 0;//商品下架状态
         int SALE = 1;//商品上架状态
     }
+
+    public interface Cart{
+        int NOT_CHECKED = 0;//购物车未被选中状态
+        int CHECKED = 1;//购物车选中状态
+    }
 }
 /*
 为什么要用接口来保存，为什么不用 类 来保存  （在类里面定义类，这个类是内部类，必须创建实例才能调用 如  new Constant().new SaleStatus().SALE ）
