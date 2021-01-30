@@ -27,6 +27,7 @@ public class ProductAdminController {
     @Autowired
     ProductService productService;
 
+    @ApiOperation("后台添加商品")
     @PostMapping("/admin/product/add")
     @ResponseBody
     public ApiRestResponse addProduct(@Valid @RequestBody AddProductReq addProductReq){
@@ -34,6 +35,7 @@ public class ProductAdminController {
         return ApiRestResponse.success();
     }
 
+    @ApiOperation("后台添加商品时，需要的上传文件接口")
     @PostMapping("/admin/upload/file")
     public ApiRestResponse upload(HttpServletRequest httpServletRequest, @RequestParam("file")MultipartFile file){//通过HTTP请求获取相关参数，如URL等；
         String newFileName = productService.upload(httpServletRequest, file);
@@ -72,7 +74,7 @@ public class ProductAdminController {
     }
 
     @ApiOperation("后台列表接口")
-    @PostMapping("/admin/product/list")
+    @GetMapping("/admin/product/list")
     public ApiRestResponse list(@RequestParam Integer pageNum,@RequestParam Integer pageSize){
         PageInfo pageInfo = productService.listForAdmin(pageNum, pageSize);
         return ApiRestResponse.success(pageInfo);

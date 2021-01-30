@@ -27,4 +27,12 @@ public class Constant {
     public interface ProductListOrderBy{
         Set<String> PRICE_ASC_DESC = Sets.newHashSet("price desc","price acs");
     }
+
+    public interface SaleStatus{
+        int NOT_SALE = 0;//商品下架状态
+        int SALE = 1;//商品上架状态
+    }
 }
+/*
+为什么要用接口来保存，为什么不用 类 来保存  （在类里面定义类，这个类是内部类，必须创建实例才能调用 如  new Constant().new SaleStatus().SALE ）
+ */
