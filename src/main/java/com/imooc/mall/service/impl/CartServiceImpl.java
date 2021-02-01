@@ -74,4 +74,43 @@ public class CartServiceImpl implements CartService {
             throw new ImoocMallException(ImoocMallExceptionEnum.NOT_ENOUGH);
         }
     }
+
+
+    @Override
+    public List<CartVO> update(Integer userId, Integer productId, Integer count){//直接返回购物车列表，避免多次调用，提高性能
+        validProduct(productId,count);
+
+        Cart cart = cartMapper.selectCartByUserIdAndProductId(userId, productId);
+        if (cart == null){
+            //这个商品之前不在购物车里，无法更新
+           throw new ImoocMallException(ImoocMallExceptionEnum.UPDATE_FAILED);
+        }else {
+            //这个商品已经在购物车里，则更新数量
+            Cart cartNew = new Cart();
+            cartNew.setQuantity(count);
+            cartNew.setId(cart.getId());
+            cartNew.setProductId(cart.getProductId());
+            cartNew.setUserId(cart.getUserId());
+            cartNew.setSelected(Constant.Cart.CHECKED);//这里是否选中状态，要根据具体的业务逻辑进行分析；如有的厂商认为增加了数量证明用户想购买，自动选中；有的则不是；
+            cartMapper.updateByPrimaryKeySelective(cartNew);
+        }
+        return this.list(userId);
+
+    }
+
+    @Override
+    public List<CartVO> delete(Integer userId, Integer productId){//直接返回购物车列表，避免多次调用，提高性能
+        Cart cart = cartMapper.selectCartByUserIdAndProductId(userId, productId);
+        if (cart == null){
+            //这个商品之前不在购物车里，无法删除
+            throw new ImoocMallException(ImoocMallExceptionEnum.DELETE_FAILED);
+        }else {
+            //这个商品已经在购物车里，则可以删除
+           cartMapper.deleteByPrimaryKey(cart.getId());
+        }
+        return this.list(userId);
+
+    }
+
+
 }
