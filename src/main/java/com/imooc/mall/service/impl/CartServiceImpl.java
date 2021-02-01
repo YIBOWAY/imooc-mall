@@ -26,7 +26,17 @@ public class CartServiceImpl implements CartService {
     CartMapper cartMapper;
 
     @Override
-    public List<CartVO> add(Integer userId, Integer productId, Integer count){
+    public List<CartVO> list(Integer userId){
+        List<CartVO> cartVOS = cartMapper.selectList(userId);
+        for (int i = 0; i < cartVOS.size(); i++) {//为每一个购物车对象添加所有价格属性
+            CartVO cartVO = cartVOS.get(i);
+            cartVO.setTotalPrice(cartVO.getPrice() * cartVO.getQuantity());
+        }
+        return cartVOS;
+    }
+
+    @Override
+    public List<CartVO> add(Integer userId, Integer productId, Integer count){//直接返回购物车列表，避免多次调用，提高性能
         validProduct(productId,count);
 
         Cart cart = cartMapper.selectCartByUserIdAndProductId(userId, productId);
@@ -49,7 +59,7 @@ public class CartServiceImpl implements CartService {
             cartNew.setSelected(Constant.Cart.CHECKED);//这里是否选中状态，要根据具体的业务逻辑进行分析；如有的厂商认为增加了数量证明用户想购买，自动选中；有的则不是；
             cartMapper.updateByPrimaryKeySelective(cartNew);
         }
-        return null;
+        return this.list(userId);
 
     }
 
