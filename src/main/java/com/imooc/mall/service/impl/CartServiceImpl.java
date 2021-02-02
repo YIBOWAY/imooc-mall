@@ -109,8 +109,26 @@ public class CartServiceImpl implements CartService {
            cartMapper.deleteByPrimaryKey(cart.getId());
         }
         return this.list(userId);
-
     }
 
+    @Override
+    public List<CartVO> selectOrNot(Integer userId, Integer productId, Integer selected){
+        Cart cart = cartMapper.selectCartByUserIdAndProductId(userId, productId);
+        if (cart == null){
+            //这个商品之前不在购物车里，无法进行选择操作
+            throw new ImoocMallException(ImoocMallExceptionEnum.NOT_IN_CART);
+        }else {
+            //这个商品已经在购物车里，则可以进行选择操作
+            cartMapper.selectOrNot(userId,productId,selected);
+        }
+        return this.list(userId);
+    }
+
+    @Override
+    public List<CartVO>selectAllOrNot(Integer userId,Integer selected){
+        //改变选中的状态
+        cartMapper.selectOrNot(userId,null,selected);//方法的复用，不传productId时，直接替换全部；
+        return this.list(userId);
+    }
 
 }

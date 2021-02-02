@@ -135,4 +135,14 @@
     where c.user_id = #{userId}
     and p.status = 1
   </select>
+  <select id="selectOrNot" parameterType="map" resultType="java.lang.Integer">
+    update imooc_mall.imooc_mall_cart
+    set selected = #{selected}
+    where user_id = #{userId}
+#       为了方便复用（全选，全不选），添加一层if判断
+    <if test="productId != null">
+      and product_id = #{productId};
+    </if>
+
+  </select>
 </mapper>

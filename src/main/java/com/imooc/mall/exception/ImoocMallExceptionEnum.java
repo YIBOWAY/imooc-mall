@@ -20,6 +20,7 @@ public enum  ImoocMallExceptionEnum {
     UPLOAD_FAILED(10015,"图片上传失败"),
     NOT_SALE(10016,"商品不可售"),
     NOT_ENOUGH(10017,"商品库存不足"),
+    NOT_IN_CART(10018,"商品不在购物车中"),
     //区分业务异常及系统异常，通过异常代码；
     SYSTEM_ERROR(20000,"系统异常");
     /**
