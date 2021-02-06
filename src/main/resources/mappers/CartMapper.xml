@@ -135,7 +135,7 @@
     where c.user_id = #{userId}
     and p.status = 1
   </select>
-  <select id="selectOrNot" parameterType="map" resultType="java.lang.Integer">
+  <update id="selectOrNot" parameterType="map">
     update imooc_mall.imooc_mall_cart
     set selected = #{selected}
     where user_id = #{userId}
@@ -144,5 +144,8 @@
       and product_id = #{productId};
     </if>
 
-  </select>
+  </update>
 </mapper>
+<!--        ResultMap：将查询结果集中的列一一映射到java对象的各个属性上去，-->
+<!--        此处的这个映射关系，是根据用户在“resultMap”的子标签中的配置来决定的，灵活多变，常用于多表查询以及查询时使用别名的情况。-->
+<!--        select、insert、update、delete元素中有一个parameterType属性，用于对应的mapper接口方法接受的参数类型。-->
