@@ -23,6 +23,8 @@ public enum  ImoocMallExceptionEnum {
     NOT_IN_CART(10018,"商品不在购物车中"),
     CART_EMPTY(10019,"购物车为空"),
     NO_ENUM(10020,"未找到对应枚举"),
+    NO_ORDER(10021,"订单为空"),
+    NOT_YOUR_ORDER(10022,"订单不属于你"),
     //区分业务异常及系统异常，通过异常代码；
     SYSTEM_ERROR(20000,"系统异常");
     /**
