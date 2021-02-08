@@ -1,5 +1,7 @@
 package com.imooc.mall.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocMallException;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
@@ -135,7 +137,7 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setProductId(cartVO.getProductId());
             //保存当前的商品信息，后续商品信息变动不会对订单产生影响
             orderItem.setProductName(cartVO.getProductName());
-            orderItem.setProductName(cartVO.getProductImage());
+            orderItem.setProductImg(cartVO.getProductImage());
             orderItem.setUnitPrice(cartVO.getPrice());
             orderItem.setQuantity(cartVO.getQuantity());
             orderItem.setTotalPrice(cartVO.getTotalPrice());
@@ -194,5 +196,26 @@ public class OrderServiceImpl implements OrderService {
         orderVO.setOrderStatusName(Constant.OrderStatusEnum.codeOf(order.getOrderStatus()).getValue());
         return orderVO;
 
+    }
+
+    @Override
+    public PageInfo listForCustomer(Integer pageNum,Integer pageSize){
+        Integer userId = UserFilter.currentUser.getId();
+        PageHelper.startPage(pageNum,pageSize);
+        List<Order> orderList = orderMapper.listForCustomer(userId);
+        List<OrderVO> orderVOList = orderListToOrderVOList(orderList);
+        PageInfo pageInfo = new PageInfo<>(orderList);
+        pageInfo.setList(orderVOList);
+        return pageInfo;
+    }
+
+    private List<OrderVO> orderListToOrderVOList(List<Order> orderList) {
+        ArrayList<OrderVO> orderVOList = new ArrayList<>();
+        for (int i = 0; i < orderList.size(); i++) {
+            Order order = orderList.get(i);
+            OrderVO orderVO = getOrderVO(order);
+            orderVOList.add(orderVO);
+        }
+        return orderVOList;
     }
 }
