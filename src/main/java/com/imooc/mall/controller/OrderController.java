@@ -38,4 +38,11 @@ public class OrderController {
         PageInfo pageInfo = orderService.listForCustomer(pageNum, pageSize);
         return ApiRestResponse.success(pageInfo);
     }
+
+    @PostMapping("order/cancel")
+    @ApiOperation("前台取消订单")
+    public ApiRestResponse cancel(@RequestParam String orderCode){
+        orderService.cancel(orderCode);
+        return ApiRestResponse.success();
+    }
 }

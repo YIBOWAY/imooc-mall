@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -217,5 +218,28 @@ public class OrderServiceImpl implements OrderService {
             orderVOList.add(orderVO);
         }
         return orderVOList;
+    }
+
+    @Override
+    public void cancel(String orderCode){
+        Order order = orderMapper.selectByOrderCode(orderCode);
+        //查不到订单，报错
+        if (order == null){
+            throw new ImoocMallException(ImoocMallExceptionEnum.NO_ORDER);
+        }
+        //查到了订单，校验身份
+        Integer userId = UserFilter.currentUser.getId();
+        if (!order.getUserId().equals(userId)){
+            throw new ImoocMallException(ImoocMallExceptionEnum.NOT_YOUR_ORDER);
+        }
+        //判断订单状态，如果处于未支付状态则可以取消；如果处于已支付状态等，则需要另外的逻辑，例如退款；
+        if (order.getOrderStatus().equals(Constant.OrderStatusEnum.NOT_PAID.getCode())){
+            order.setOrderStatus(Constant.OrderStatusEnum.CANCELED.getCode());
+            order.setEndTime(new Date());
+            orderMapper.updateByPrimaryKeySelective(order);
+        }else {
+            throw new ImoocMallException(ImoocMallExceptionEnum.WRONG_ORDER_STATUS);
+        }
+
     }
 }
